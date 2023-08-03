@@ -11,7 +11,7 @@ const App = () => {
     //   setNotices(updatedNotices);
     // });
 
-    socket.on('notices-created', () => {
+    socket.on('notices-updated', () => {
       // call the api get all notice
       fetch('http://localhost:3007/getAllNotice', {
         method: 'GET',
@@ -25,19 +25,21 @@ const App = () => {
       })
     });
 
-    socket.on("notices-deleted", () => {
+    socket.on('employeePost-updated', () => {
       // call the api get all notice
-      fetch('http://localhost:3007/getAllNotice', {
+      fetch('http://localhost:3007/getAllPost', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          },
-          }).then((res) => {
-            console.log("res--------------- ", res)
-          }).catch((err) => {
-            console.log("err---------------- ", err)
-          })
+        },
+      }).then((res) => {
+        console.log("res--------------- ", res)
+      }).catch((err) => {
+        console.log("err---------------- ", err)
+      })
     });
+
+    
 
     socket.emit("notice", "Hello from client");
 
