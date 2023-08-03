@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import socketIOClient from 'socket.io-client';
 
-function App() {
+const App = () => {
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    const socket = socketIOClient('http://localhost:3007'); // Replace with your backend URL
+
+    // socket.on('notices', (updatedNotices) => {
+    //   setNotices(updatedNotices);
+    // });
+
+    socket.on('notices-created', () => {
+      // call the api get all notice
+      fetch('http://localhost:3007/getAllNotice', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => {
+        console.log("res--------------- ", res)
+      }).catch((err) => {
+        console.log("err---------------- ", err)
+      })
+    });
+
+    socket.on("notices-deleted", () => {
+      // call the api get all notice
+      fetch('http://localhost:3007/getAllNotice', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          },
+          }).then((res) => {
+            console.log("res--------------- ", res)
+          }).catch((err) => {
+            console.log("err---------------- ", err)
+          })
+    });
+
+    socket.emit("notice", "Hello from client");
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Dashboard</h1>
+      {notices.map((notice) => (
+        <div key={notice.id}>
+          <p>{notice.title}</p>
+          <p>{notice.content}</p>
+        </div>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
